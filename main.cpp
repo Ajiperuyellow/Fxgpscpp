@@ -19,8 +19,8 @@
 #include <avr/io.h>
 #include "lcd-routines.h"
 #include <avr/interrupt.h>
-#include "uart.h"
-#include "nmea.h"
+//#include "uart.h"
+//#include "nmea.h"
 #include <math.h>
 #include <util/delay.h>
 #include <stdlib.h>
@@ -51,8 +51,8 @@
 //###############################################################################
 //###############################################################################
 
-UART	uart0; // gps module
-NMEA nmea;
+//UART	uart0; // gps module
+//NMEA nmea;
 
 //###############################################################################
 //###############################################################################
@@ -62,10 +62,10 @@ NMEA nmea;
 //###############################################################################
 
 //USART0 RX interrupt this code is executed when we recieve a character
-ISR(USART_RXC_vect){
-	volatile char c = UDR; //Read the value out of the UART buffer
-	nmea.fusedata(c);
-}
+//ISR(USART_RXC_vect){
+//	volatile char c = UDR0; //Read the value out of the UART buffer
+//	nmea.fusedata(c);
+//}
 
 //###############################################################################
 //###############################################################################
@@ -90,19 +90,19 @@ int main(void)
   lcd_data( 'j' );
   lcd_data( '!' );
 
-  uart0.Init(0,9600, true); //uart0: GPS
+ // uart0.Init(0,9600, true); //uart0: GPS
   //lcd_string("DONE!");
   //lcd_string_format("Hallo","Check");
 
-  while(1){
-      lcd_setcursor( 0, 1 );
+ while(1){
+      lcd_setcursor( 0, 2 );
       // char Buffer[5];
 	  //itoa( nmea.getAltitude(), Buffer, 10 );
 	  //lcd_string( Buffer );
       //lcd_setcursor( 5, 1 );
-      char Buffer2[5];
-	  itoa( nmea.getMinute(), Buffer2, 10 );
-	  lcd_string( Buffer2 );
+      //char Buffer2[5];
+	  //itoa( nmea.getMinute(), Buffer2, 10 );
+	  //lcd_string( Buffer2 );
 
 
 	  //char Breitengrad[5];
