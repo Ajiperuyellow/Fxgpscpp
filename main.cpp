@@ -85,17 +85,17 @@ int main(void)
   //uart_init();
 
   // Text in einzelnen Zeichen ausgeben
-  lcd_data( 'T' );
+  lcd_data( 'H' );
   lcd_data( 'e' );
-  lcd_data( 's' );
-  lcd_data( 't' );
+  lcd_data( 'j' );
+  lcd_data( '!' );
 
   uart0.Init(0,9600, true); //uart0: GPS
   //lcd_string("DONE!");
   //lcd_string_format("Hallo","Check");
 
   while(1){
-      lcd_setcursor( 0, 2 );
+      lcd_setcursor( 0, 1 );
       // char Buffer[5];
 	  //itoa( nmea.getAltitude(), Buffer, 10 );
 	  //lcd_string( Buffer );
