@@ -19,11 +19,12 @@
 #include <avr/io.h>
 #include "lcd-routines.h"
 #include <avr/interrupt.h>
-//#include "uart.h"
-//#include "nmea.h"
+#include "uart.h"
+#include "nmea.h"
 #include <math.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifndef F_CPU
 #define F_CPU 8000000
@@ -51,8 +52,8 @@
 //###############################################################################
 //###############################################################################
 
-//UART	uart0; // gps module
-//NMEA nmea;
+UART	uart0; // gps module
+NMEA nmea;
 
 //###############################################################################
 //###############################################################################
@@ -62,10 +63,29 @@
 //###############################################################################
 
 //USART0 RX interrupt this code is executed when we recieve a character
-//ISR(USART_RXC_vect){
-//	volatile char c = UDR0; //Read the value out of the UART buffer
-//	nmea.fusedata(c);
-//}
+ISR(USART0_RX_vect){
+	volatile char c = UDR0; //Read the value out of the UART buffer
+	nmea.fusedata(c);
+}
+
+//###############################################################################
+//###############################################################################
+// F O R M A T
+//###############################################################################
+//###############################################################################
+//###############################################################################
+void lcd_string_format(const char *szFormat, ...)
+{
+    char szBuffer[256]; //in this buffer we form the message
+    int NUMCHARS = sizeof(szBuffer) / sizeof(szBuffer[0]);
+    int LASTCHAR = NUMCHARS - 1;
+    va_list pArgs;
+    va_start(pArgs, szFormat);
+    vsnprintf(szBuffer, NUMCHARS - 1, szFormat, pArgs);
+    va_end(pArgs);
+	lcd_string(szBuffer);
+}
+
 
 //###############################################################################
 //###############################################################################
@@ -90,37 +110,86 @@ int main(void)
   lcd_data( 'j' );
   lcd_data( '!' );
 
- // uart0.Init(0,9600, true); //uart0: GPS
+  uart0.Init(0,9600, true); //uart0: GPS
   //lcd_string("DONE!");
   //lcd_string_format("Hallo","Check");
-
+lcd_clear();
  while(1){
-      lcd_setcursor( 0, 2 );
-      // char Buffer[5];
-	  //itoa( nmea.getAltitude(), Buffer, 10 );
-	  //lcd_string( Buffer );
-      //lcd_setcursor( 5, 1 );
-      //char Buffer2[5];
-	  //itoa( nmea.getMinute(), Buffer2, 10 );
-	  //lcd_string( Buffer2 );
+     _delay_ms( 100 );
+     char Positionstring1[8];
+	 char Positionstring2[8];
+	 dtostrf(nmea.getLatitude(),3,5,Positionstring1);
+     dtostrf(nmea.getLongitude(),3,5,Positionstring2);
+	 lcd_setcursor( 0, 1 );
+	 lcd_string(Positionstring1);
+	 lcd_setcursor( 8, 1 );
+     lcd_data( ' ' );
+	 lcd_string(Positionstring2);
+
+     //lcd_string_format("%2d:%2d %2d-%2d-%2d",nmea.getHour(),nmea.getMinute(),nmea.getDay(),nmea.getMonth(),nmea.getYear());
+	 lcd_setcursor( 0, 2 );
+     char BufferH[3];
+     itoa( nmea.getHour()+2, BufferH, 10 );
+     lcd_string( BufferH );
+     lcd_data( ':' );
+	 char BufferMin[3];
+	 itoa( nmea.getMinute(), BufferMin, 10 );
+	 lcd_string( BufferMin );
 
 
-	  //char Breitengrad[5];
+     /*
+
+
+	 lcd_clear();
+	 lcd_setcursor( 0, 1 );
+	 //lcd_string("Time:");
+	 lcd_string( BufferH );
+
+
+	 lcd_data( ':' );*/
+
+
+
+
+
+
+
+	 //lcd_clear();
+
+
+
+	 //lcd_string_format("%f SATs:%d    \n%f A:%dm    ",nmea.getLatitude(), nmea.getSatellites(),nmea.getLongitude(), (int)nmea.getAltitude());
+
+	 /* itoa( nmea.getAltitude(),Buffer, 10 );
+	  lcd_string( Buffer );
+      lcd_setcursor( 5, 2 );
+      char Buffer2[5];
+
+
+
+
+	  char Breitengrad[10];
 
 
 	  // !!!!!!! Hier weiter! 	Mit fettem 644er AVR, wegen flieﬂkommaarithmetik
 
 
 
+	  //double test;
+	  //test=23.355;
+
+	  dtostrf(nmea.getMinute(),5,2,Breitengrad);
+	  lcd_string(Breitengrad );
+
+	   dtostrf(test,5,3,Breitengrad);
 
 
+	  //lcd_string_format("%f",test);
+      //_delay_ms( 5000 );
 
-
-      //dtostrf(nmea.getMinute(),5,2,Breitengrad);
       //lcd_string(Breitengrad );
-	 // _delay_ms( 500 );
 	  //lcd_string_format("%f",nmea.getLatitude());
-
+*/
 
 
   }

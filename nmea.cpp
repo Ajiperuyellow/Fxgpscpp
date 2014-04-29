@@ -1,10 +1,4 @@
 /*
- * nmea.c
- *
- *  Created on: 17.04.2014
- *      Author: Moritz
- */
-/*
     File:       nmea.cpp
     Version:    0.1.0
     Date:       Feb. 23, 2013
@@ -328,4 +322,3 @@ float NMEA::getSpeed() {
 float NMEA::getBearing() {
 	return res_fBearing;
 }
-

@@ -1,10 +1,4 @@
 /*
- * uart.c
- *
- *  Created on: 17.04.2014
- *      Author: Moritz
- */
-/*
     File:       uart.cpp
     Version:    0.1.0
     Date:       Feb. 23, 2013
@@ -38,7 +32,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <avr/io.h>
-#include <math.h>
+
 /*
  * To receive interrupt results, use:
  ISR(USART0_RX_vect){
@@ -50,12 +44,11 @@
  * AVR UART registers configured for Atmega128. For Atmega8 or others with a single UART interface, comment the XXX1 registers and flags (second line)
  */
 volatile unsigned char *uart_regs[2][6] = {
-	{&UCSRA, &UCSRB, &UCSRC, &UDR, &UBRRH, &UBRRL}, // uart 0
-
+	{&UCSR0A, &UCSR0B, &UCSR0C, &UDR0, &UBRR0H, &UBRR0L}//, // uart 0
 	//{&UCSR1A, &UCSR1B, &UCSR1C, &UDR1, &UBRR1H, &UBRR1L}  // uart 1
 };
 int uart_flags[2][8] = {
-	{ RXCIE, UDRE, RXC, RXEN, TXEN, UCSZ0, UCSZ1, TXC}, // uart 0
+	{ RXCIE0, UDRE0, RXC0, RXEN0, TXEN0, UCSZ00, UCSZ01, TXC0}//, // uart 0
 	//{ RXCIE1, UDRE1, RXC1, RXEN1, TXEN1, UCSZ10, UCSZ11, TXC1}  // uart 1
 };
 
@@ -137,4 +130,3 @@ unsigned char UART::RecvPoll(){
 	while (!(*uart_regs[m_index][0]  & (1 << uart_flags[m_index][2]))) ;
 	return *uart_regs[m_index][3];
 }
-
